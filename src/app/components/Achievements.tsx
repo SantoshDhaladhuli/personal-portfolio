@@ -1,6 +1,8 @@
 import { Award } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export function Achievements() {
+  const [isVisible, setIsVisible] = useState(false);
   const achievements = [
     {
       title: "Best Innovation Award",
@@ -34,24 +36,40 @@ export function Achievements() {
     }
   ];
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && setIsVisible(true),
+      { threshold: 0.1 }
+    );
+    const element = document.getElementById('achievements-section');
+    if (element) observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="achievements" className="py-20 px-6 bg-background">
+    <section id="achievements-section" className="py-20 px-6 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="space-y-4 mb-12">
-          <h2 className="text-4xl md:text-5xl">Achievements & Recognition</h2>
-          <div className="w-20 h-1 bg-primary"></div>
+          <h2 className="text-4xl md:text-5xl bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">Achievements & Recognition</h2>
+          <div className="h-1 w-20 bg-gradient-to-r from-primary via-accent to-primary"></div>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {achievements.map((achievement, index) => (
-            <div key={index} className="bg-card rounded-xl p-6 border border-border hover:border-primary/50 transition-all hover:shadow-lg">
+            <div 
+              key={index} 
+              className={`bg-card/50 backdrop-blur-md rounded-xl p-6 border border-border/50 hover:border-primary/50 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 group ${
+                isVisible ? 'animate-fadeInUp' : 'opacity-0'
+              }`}
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 flex-shrink-0">
+                <div className="p-3 rounded-lg bg-primary/10 flex-shrink-0 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
                   <Award className="w-6 h-6 text-primary" />
                 </div>
                 <div className="space-y-2">
-                  <h4>{achievement.title}</h4>
-                  <p className="text-sm text-primary">{achievement.organization}</p>
+                  <h4 className="group-hover:text-primary transition-colors duration-200">{achievement.title}</h4>
+                  <p className="text-sm text-primary group-hover:text-primary/80 transition-colors">{achievement.organization}</p>
                   <p className="text-sm text-muted-foreground">{achievement.description}</p>
                 </div>
               </div>
@@ -59,6 +77,22 @@ export function Achievements() {
           ))}
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+      `}</style>
     </section>
   );
 }

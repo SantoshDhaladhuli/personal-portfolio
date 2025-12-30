@@ -76,7 +76,7 @@ export function Contact() {
         
         <div className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground">
-            © 2024 Santosh Dhaladhuli. All rights reserved.
+            © 2026 Santosh Dhaladhuli. All rights reserved.
           </p>
         </div>
       </div>
